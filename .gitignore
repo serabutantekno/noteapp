@@ -1,1 +1,5 @@
+# excluded directories
 node_modules/
+
+# excluded files
+.env
