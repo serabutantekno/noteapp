@@ -32,6 +32,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       role: {
+        allowNull: false,
         type: Sequelize.ENUM('admin', 'user')
       },
       created_at: {
@@ -40,6 +41,9 @@ module.exports = {
       },
       updated_at: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deleted_at: {
         type: Sequelize.DATE
       }
     });
