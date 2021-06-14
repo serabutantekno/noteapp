@@ -4,8 +4,7 @@ const port = 3000
 
 app.use(express.json())
 
-const routes = require('./routes/auth')
-app.use('/api/', routes)
+app.use('/api/', require('./routes'))
 
 app.listen(port, () => {
   console.log(`todoapp listening at http://localhost:${ port }`)
