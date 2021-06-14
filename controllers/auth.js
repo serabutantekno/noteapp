@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const db = require('../db/models')
 const sendMail = require('./sendMailController')
 
@@ -60,7 +61,8 @@ class AuthController {
       }
 
       const payload = JSON.parse(JSON.stringify(currentUser))
-      res.status(200).json(currentUser)
+      const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN })
+      res.status(200).json(Object.assign(payload, { token:token }))
 
     } catch (error) {
       console.log(error)
