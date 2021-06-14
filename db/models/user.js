@@ -20,12 +20,29 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    first_name: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    last_name: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    email: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      unique: true
+    },
+    password: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
     photo: DataTypes.STRING,
-    username: DataTypes.STRING,
+    username: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      unique: true
+    },
     confirmed_at: DataTypes.DATE,
     role: DataTypes.ENUM('admin', 'user')
   }, {
