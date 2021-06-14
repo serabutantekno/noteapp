@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const db = require('../db/models')
 const sendMail = require('./sendMailController')
+const { baseResponse:RES } = require('../helpers')
 
 class AuthController {
 
@@ -12,7 +13,9 @@ class AuthController {
       const data = await db.User.create(Object.assign(req.body, { password: hashedPassword }))
       const encrypted_data = Buffer.from((data.id_user + ':' + data.email), 'utf8').toString('base64')
       sendMail(data.email, 'emailVerification', encrypted_data)
-      res.json(data)
+      console.log(data)
+      data.password = undefined
+      res.status(201).json(RES.success(`User with email ${ data.email } registered successfully.`, data, res.statusCode))
     } catch (error) {
       console.log(error)
     }
@@ -33,7 +36,7 @@ class AuthController {
       if (user && user.email === email) {
         user.confirmed_at = new Date()
         user.save()
-        res.status(200).json({ message: 'email has been verified, now you can login' })
+        res.status(200).json(RES.success(`The email ${ email } is verified successfully. Now you can log in.`, {}, res.statusCode))
       }
 
     } catch (error) {
@@ -62,7 +65,10 @@ class AuthController {
 
       const payload = JSON.parse(JSON.stringify(currentUser))
       const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN })
-      res.status(200).json(Object.assign(payload, { token:token }))
+
+      delete payload.password
+
+      res.status(200).json(RES.success('Login succeed.', Object.assign(payload, { token: token }), res.statusCode))
 
     } catch (error) {
       console.log(error)
