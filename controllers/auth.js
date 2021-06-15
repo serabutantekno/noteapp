@@ -54,6 +54,10 @@ class AuthController {
         }
       })
 
+      if (!currentUser) {
+        return res.status(404).json(RES.error('User not found or deleted.', res.statusCode))
+      }
+
       if (!currentUser.confirmed_at) {
         return res.status(400).json({ message: 'please verify your email address' })
       }

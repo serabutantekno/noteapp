@@ -51,6 +51,27 @@ class userController {
     }
   }
 
+
+  static async deleteUserById(req, res, next) {
+    try {
+
+      const user = await db.User.destroy({
+        where: {
+          id_user: req.params.id
+        },
+        returning: true,
+        plain: true
+      })
+
+      console.log(user)
+
+      res.status(200).json(RES.success(`User ${ user.email } has been deleted.`, user, res.statusCode))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
 }
 
 module.exports = userController
