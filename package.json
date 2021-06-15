@@ -1,13 +1,14 @@
 {
-  "name": "todoapp",
+  "name": "noteapp",
   "version": "0.0.1",
-  "description": "A minimalist todo app (Refactory Acceleration Batch 3)",
+  "description": "A minimalist note taking app (Refactory Acceleration Batch 3 Mini Project)",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js"
   },
   "keywords": [
-    "todo-app",
+    "note-app",
+    "note-taking-app",
     "mini-project",
     "simple-app"
   ],
