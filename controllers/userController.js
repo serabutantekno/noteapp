@@ -4,9 +4,26 @@ const { baseResponse:RES } = require('../helpers')
 
 class userController {
 
-  static async getUsers(req, res) {
-    const users = await db.User.findAll()
-    res.status(200).json({ message: 'retrieving all users succeed', data: users })
+  static async getUsers(req, res, next) {
+    try {
+
+      let data, message
+
+      if (req.user.role === 'admin') {
+        data = await db.User.findAll()
+        message = 'Retrieving all users succeed.'
+      }
+
+      if (req.user.role === 'user') {
+        data = await db.User.findByPk(req.user.id_user)
+        message = 'Retrieving your data'
+      }
+
+      res.status(200).json(RES.success(message, data, res.statusCode))
+
+    } catch (error) {
+      next(error)
+    }
   }
 
 
