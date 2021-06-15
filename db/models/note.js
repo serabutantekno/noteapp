@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Note extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,47 +11,37 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Note, { foreignKey: 'id_user', as: 'notes' })
+      Note.belongsTo(models.User, { foreignKey: 'id_user', as: 'owner' })
     }
   };
-  User.init({
-    id_user: {
+  Note.init({
+    id_notes: {
       allowNull: false,
       autoIncrement: true,
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    first_name: {
+    title: {
       allowNull: false,
       type: DataTypes.STRING
     },
-    last_name: {
+    body: {
       allowNull: false,
       type: DataTypes.STRING
     },
-    email: {
+    type: {
       allowNull: false,
-      type: DataTypes.STRING,
-      unique: true
+      type: DataTypes.ENUM('idea', 'info', 'credential', 'reminder', 'plan', 'journal')
     },
-    password: {
-      allowNull: false,
+    secret: {
       type: DataTypes.STRING
-    },
-    photo: DataTypes.STRING,
-    username: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      unique: true
-    },
-    confirmed_at: DataTypes.DATE,
-    role: DataTypes.ENUM('admin', 'user')
+    }
   }, {
     sequelize,
-    modelName: 'User',
-    tableName: 'Users',
+    modelName: 'Note',
+    tableName: 'Notes',
     underscored: true,
     paranoid: true
   });
-  return User;
+  return Note;
 };
