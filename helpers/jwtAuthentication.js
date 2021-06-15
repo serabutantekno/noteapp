@@ -13,6 +13,8 @@ function authenticateToken(req, res, next) {
         })
       }
 
+      delete user.password
+
       req.user = JSON.parse(JSON.stringify(user))
       next()
     })
