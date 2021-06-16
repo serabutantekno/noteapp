@@ -12,6 +12,7 @@ function joiValidateRequest(schema) {
     if (error) {
       next(error)
     } else {
+      req.bodyRaw = Object.assign({}, req.body)
       req.body = value
       next()
     }
