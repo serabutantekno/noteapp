@@ -26,6 +26,39 @@ class noteController {
     }
   }
 
+  static async getNoteById(req, res, next) {
+    try {
+
+      const currentUserId = req.user.role === 'user' ? req.user.id_user : null
+      const note = await db.Note.findOne({
+        attributes: ['id_notes', 'id_user', 'title', 'body', 'type', 'secret', 'created_at', 'updated_at'],
+        where: currentUserId ? {
+          id_user: currentUserId,
+          id_notes: req.params.id
+        } : { id_notes: req.params.id }
+      })
+
+      if (req.user.role !== 'admin') {
+        if (!note) {
+          throw new Error(`You don't have permission to access this note.`)
+        }
+
+        if (note.secret && !req.body.secret) {
+          throw new Error('The note is protected. Please enter your secret key!')
+        }
+
+        if (req.body.secret && (String(note.secret) !== String(req.body.secret))) {
+          throw new Error('The secret key is not valid. Try again.')
+        }
+      }
+
+      res.status(200).json(RES.success(`The note '${ note.title }' retrieved successfully.`, note, res.statusCode))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async createNote(req, res, next) {
     try {
 
