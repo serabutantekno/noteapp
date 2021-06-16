@@ -3,6 +3,30 @@ const { baseResponse:RES } = require('../helpers')
 
 class noteController {
 
+  static async getNotes(req, res, ntext) {
+    try {
+
+      let currentUserId
+
+      if (req.user.role === 'user') {
+        currentUserId = req.user.id_user
+      }
+
+      const { count, rows } = await db.Note.findAndCountAll(
+        currentUserId ? {
+          where: {
+            id_user: currentUserId
+          }
+        } : undefined
+      )
+
+      res.status(200).json(RES.success(`All notes from a total of ${ count } notes retrieved successfully.`, rows, res.statusCode))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async createNote(req, res, next) {
     try {
 

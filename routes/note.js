@@ -4,6 +4,7 @@ const { noteController } = require('../controllers')
 const { jwtAuthentication:jwt, authorization:roles, joiRequestValidator:validateReq } = require('../helpers')
 const { createNoteSchema } = require('../requestSchema')
 
+router.get('/', jwt, roles('admin', 'user'), noteController.getNotes)
 router.post('/', jwt, roles('admin', 'user'), validateReq(createNoteSchema()), noteController.createNote)
 router.delete('/:id', jwt, roles('admin', 'user'), noteController.deleteNoteById)
 
