@@ -24,6 +24,30 @@ class noteController {
     }
   }
 
+  static async deleteNoteById(req, res, next) {
+    try {
+
+      let currentUserId
+
+      if (req.user.role === 'user') {
+        currentUserId = req.user.id_user
+      }
+
+      const deletedNote = await db.Note.destroy({
+        where: Object.assign({
+          id_notes: req.params.id
+        }, { id_user: currentUserId ? currentUserId : null }),
+        returning: true,
+        plain: true
+      })
+
+      res.status(200).json(RES.success(`The note '${ deletedNote }' is deleted successfully.`, deletedNote, res.statusCode))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
 }
 
 module.exports = noteController

@@ -5,5 +5,6 @@ const { jwtAuthentication:jwt, authorization:roles, joiRequestValidator:validate
 const { createNoteSchema } = require('../requestSchema')
 
 router.post('/', jwt, roles('admin', 'user'), validateReq(createNoteSchema()), noteController.createNote)
+router.delete('/:id', jwt, roles('admin', 'user'), noteController.deleteNoteById)
 
 module.exports = router
