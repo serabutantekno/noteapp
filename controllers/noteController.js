@@ -9,7 +9,7 @@ class noteController {
       let id_user
 
       if (req.user.role === 'admin') {
-        id_user = Object.keys(req.bodyRaw).includes('id_user') ? req.bodyRaw.id_user : req.user.id_user
+        id_user = Object.keys(req.body).includes('id_user') ? req.body.id_user : req.user.id_user
       }
 
       if (req.user.role === 'user') {
