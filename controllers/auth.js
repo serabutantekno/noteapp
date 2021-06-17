@@ -6,7 +6,7 @@ const { baseResponse:RES } = require('../helpers')
 
 class AuthController {
 
-  static async register(req, res) {
+  static async register(req, res, next) {
     try {
       const salt = await bcrypt.genSalt(10)
       const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -17,12 +17,12 @@ class AuthController {
       data.password = undefined
       res.status(201).json(RES.success(`User with email ${ data.email } registered successfully.`, data, res.statusCode))
     } catch (error) {
-      console.log(error)
+      next(error)
     }
   }
 
 
-  static async emailVerification(req, res) {
+  static async emailVerification(req, res, next) {
     try {
       const decrypted_data = Buffer.from(req.params.token, 'base64').toString('utf8')
       const [id, email] = decrypted_data.split(':')
@@ -40,12 +40,12 @@ class AuthController {
       }
 
     } catch (error) {
-      console.log(error)
+      next(error)
     }
   }
 
 
-  static async login(req, res) {
+  static async login(req, res, next) {
     try {
 
       const currentUser = await db.User.findOne({
@@ -75,7 +75,7 @@ class AuthController {
       res.status(200).json(RES.success('Login succeed.', Object.assign(payload, { token: token }), res.statusCode))
 
     } catch (error) {
-      console.log(error)
+      next(error)
     }
   }
 
