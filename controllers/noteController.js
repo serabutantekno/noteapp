@@ -43,11 +43,11 @@ class noteController {
           throw new Error(`You don't have permission to access this note.`)
         }
 
-        if (note.secret && !req.body.secret) {
+        if (note.secret && !req.params.secret) {
           throw new Error('The note is protected. Please enter your secret key!')
         }
 
-        if (req.body.secret && (String(note.secret) !== String(req.body.secret))) {
+        if (req.params.secret && (String(note.secret) !== String(req.params.secret))) {
           throw new Error('The secret key is not valid. Try again.')
         }
       }
