@@ -1,3 +1,5 @@
+require('dotenv').config()
+const cloudinary = require('cloudinary').v2
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const db = require('../db/models')
@@ -10,10 +12,17 @@ class AuthController {
     try {
       const salt = await bcrypt.genSalt(10)
       const hashedPassword = await bcrypt.hash(req.body.password, salt)
-      const data = await db.User.create(Object.assign(req.body, { password: hashedPassword }))
+      const uploadedPhoto = await cloudinary.uploader.upload(`data:image/png;base64,${ req.body.photo }`, {
+        folder: 'noteapp/photo/',
+        allowed_formats: ['jpg', 'png'],
+        chunk_size: 10000000
+      }, (error, result) => {
+        console.log(result, error)
+      })
+      const encryptedUploadedPhoto = Buffer.from((uploadedPhoto.public_id + '|' + uploadedPhoto.secure_url), 'utf8').toString('base64')
+      const data = await db.User.create(Object.assign(req.body, { password: hashedPassword, photo: encryptedUploadedPhoto }))
       const encrypted_data = Buffer.from((data.id_user + ':' + data.email), 'utf8').toString('base64')
       sendMail(data.email, 'emailVerification', encrypted_data)
-      console.log(data)
       data.password = undefined
       res.status(201).json(RES.success(`User with email ${ data.email } registered successfully.`, data, res.statusCode))
     } catch (error) {

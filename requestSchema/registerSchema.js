@@ -7,7 +7,8 @@ function registerSchema(req, res, next) {
     email: Joi.string().email().required(),
     password: Joi.string().min(4).required(),
     username: Joi.string().min(4).required(),
-    role: Joi.string().valid('admin', 'user').required()
+    role: Joi.string().valid('admin', 'user').required(),
+    photo: Joi.string().base64()
   })
 }
 
